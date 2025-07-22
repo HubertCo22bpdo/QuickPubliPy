@@ -1,0 +1,6 @@
+bib2json==0.1.0
+docx==0.2.4
+PyQt6==6.9.1
+PyQt6_sip==13.8.0
+python_docx==1.1.2
+Requests==2.32.4

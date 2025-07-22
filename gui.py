@@ -283,7 +283,7 @@ class BibliographyApp(QWidget):
         self.refresh_list()
 
 
-if __name__ == "__main__":
+def run_gui():
     app = QApplication(sys.argv)
     window = BibliographyApp()
     window.show()
