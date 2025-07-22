@@ -59,7 +59,7 @@ class Bibliography:
                 pages = input_pages
         
         formated_data = {
-            'Autors': authors_str[:-2],
+            'Authors': authors_str[:-2],
             'DOI': doi,
             'Year': data['published']['date-parts'][0][0],
             'Pages': pages,
@@ -93,50 +93,111 @@ class Bibliography:
             if style == 'Chicago':
                 citation = self.word_file.add_paragraph(f'{nr}.\t')
 
-                # Autors' names are parsed here
+                # Authors' names are parsed here
+                # names_str = ''
+                # full_names = info_dict["Authors"].split(', ')
+                # if len(full_names) > 6:
+                #     count_names = True
+                #     counter = 0
+                # else:
+                #     count_names = False
+                # for full_name in full_names:
+                #     name_list = full_name.split(' ')
+                #     skip = -1
+                #     special_specifier = ''
+                #     if name_list[-1] in ['Jr.', 'Jr', 'Sr.', 'Sr', 'I', 'II', 'III', 'IV', 'V']:
+                #         special_specifier = name_list[-1]
+                #         name_list = name_list[:-1]
+                #     try:
+                #         if name_list[-3][0].islower() and name_list[-2][0].islower():
+                #             last_name =  name_list[-3] +' '+ name_list[-2] +' '+ name_list[-1] + special_specifier
+                #             skip = -3
+                #     except:
+                #         continue
+                #     if name_list[-2][0].islower() and (skip != -3):
+                #         last_name =  name_list[-2] +' '+ name_list[-1] + special_specifier
+                #         skip = -2
+                #     elif skip == -1:  
+                #         last_name = name_list[-1] + special_specifier
+                #     if count_names:
+                #         counter += 1
+                #         if counter == 4:
+                #             names_str += f'et al., '
+                #             break
+                #     for name in name_list[:skip]:
+                #         if '-' in name:
+                #             parts = name.split('-')
+                #             name = f'{parts[0][0]}.'
+                #             for part in parts[1:]:
+                #                 if part[0].isupper():
+                #                     name += f'-{part[0]}.'
+                #         else:
+                #             name = f'{name[0]}.'
+                #         names_str += f'{name} '
+                #     names_str += f'{last_name}, '
+                # citation.add_run(names_str)
                 names_str = ''
-                full_names = info_dict["Autors"].split(',')
-                if len(full_names) > 6:
-                    count_names = True
-                    counter = 0
-                else:
-                    count_names = False
-                for full_name in full_names:
-                    name_list = full_name.split(' ')
-                    while '' in name_list:
-                        name_list.remove('')
-                    skip = -1
-                    special_specifier = ''
-                    if name_list[-1] in ['Jr.', 'Jr', 'Sr.', 'Sr' 'I', 'II', 'III', 'IV', 'V']:
-                        special_specifier = name_list[-1]
-                        name_list = name_list[:-1]
-                    try:
-                        if name_list[-3][0].islower() and name_list[-2][0].islower():
-                            last_name =  name_list[-3] +' '+ name_list[-2] +' '+ name_list[-1] + special_specifier
-                            skip = -3
-                    except:
-                        continue
-                    if name_list[-2][0].islower() and (skip != -3):
-                        last_name =  name_list[-2] +' '+ name_list[-1] + special_specifier
-                        skip = -2
-                    elif skip == -1:  
-                        last_name = name_list[-1] + special_specifier
-                    if count_names:
-                        counter += 1
-                        if counter == 4:
-                            names_str += f'et al., '
-                            break
-                    for name in name_list[:skip]:
-                        if '-' in name:
-                            parts = name.split('-')
-                            name = f'{parts[0][0]}.'
-                            for part in parts[1:]:
-                                if part[0].isupper():
-                                    name += f'-{part[0]}.'
+                full_names = [name.strip() for name in info_dict["Authors"].split(',') if name.strip()]
+
+                # Known surname particles
+                particles = {'de', 'del', 'de la', 'van', 'von', 'der', 'den', 'la', 'le', 'du', 'di', 'da', 'ter'}
+
+                def format_author(name: str) -> str:
+                    parts = name.strip().split()
+                    if not parts:
+                        return ''
+                    
+                    # --- Determine last name ---
+                    last_name_parts = []
+                    i = len(parts) - 1
+                    last_name_parts.insert(0, parts[i])
+                    i -= 1
+                    while i >= 0:
+                        particle_candidate = parts[i].lower()
+                        two_word = f'{parts[i].lower()} {parts[i+1].lower()}'
+                        if i < len(parts)-1 and two_word in particles:
+                            last_name_parts.insert(0, parts[i])
+                            i -= 1
+                        elif particle_candidate in particles:
+                            last_name_parts.insert(0, parts[i])
+                            i -= 1
                         else:
-                            name = f'{name[0]}.'
-                        names_str += f'{name} '
-                    names_str += f'{last_name}, '
+                            break
+                    last_name = ' '.join(last_name_parts)
+
+                    # --- Handle initials ---
+                    initials_parts = parts[:i+1]
+                    initials = []
+                    for token in initials_parts:
+                        if '-' in token:
+                            subparts = token.split('-')
+                            if len(subparts) == 2:
+                                first, second = subparts
+                                if second[0].islower():
+                                    # Treat whole as one name: Shin-ichi → S.
+                                    initials.append(f'{first[0]}.')
+                                else:
+                                    # Jun-Hao → J.-H.
+                                    initials.append(f'{first[0]}.-{second[0]}.')
+                            else:
+                                initials.append(f'{subparts[0][0]}.')  # fallback
+                        elif token.endswith('.'):
+                            # Already an initial
+                            initials.append(token)
+                        else:
+                            initials.append(f'{token[0]}.')
+                    
+                    return f'{" ".join(initials)} {last_name}'
+
+                # --- Format list of names ---
+                if len(full_names) > 6:
+                    for author in full_names[:3]:
+                        names_str += f'{format_author(author)}, '
+                    names_str += 'et al., '
+                else:
+                    for author in full_names:
+                        names_str += f'{format_author(author)}, '
+
                 citation.add_run(names_str)
 
                 #Title
@@ -197,5 +258,6 @@ class Bibliography:
                 self.word_file.save(filename)
 
     def save_json(self, filename):
+        self.bib = dict(sorted(self.bib.items(), key=lambda dictbib: int(dictbib[0])))
         with open(f'{filename}.json', 'w') as f:
             json.dump(self.bib, f, indent=2)

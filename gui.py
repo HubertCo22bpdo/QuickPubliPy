@@ -17,7 +17,7 @@ class ManualEntryDialog(QDialog):
 
         layout = QFormLayout()
         self.fields = {}
-        for field in ['Autors', 'DOI', 'Year', 'Pages', 'Journal', 'Title', 'Volume', 'Issue', 'Citation position']:
+        for field in ['Authors', 'DOI', 'Year', 'Pages', 'Journal', 'Title', 'Volume', 'Issue', 'Citation position']:
             value = self.data.get(field, "")
             widget = QLineEdit(str(value))
             layout.addRow(field, widget)
@@ -190,7 +190,7 @@ class BibliographyApp(QWidget):
         self.list_widget.clear()
         for index in sorted(self.bib.bib.keys(), key=int):
             entry = self.bib.bib[index]
-            display_text = f"{index}: {entry['Autors']} - {entry['Title']}"
+            display_text = f"{index}: {entry['Authors']} - {entry['Title']}"
             self.list_widget.addItem(display_text)
         self.update_preview()
 
@@ -202,7 +202,7 @@ class BibliographyApp(QWidget):
         index = sorted(self.bib.bib.keys(), key=int)[current]
         entry = self.bib.bib[index]
         # Live preview (simplified Chicago)
-        authors = entry.get("Autors", "")
+        authors = entry.get("Authors", "")
         title = entry.get("Title", "")
         journal = entry.get("Journal", "")
         year = entry.get("Year", "")
