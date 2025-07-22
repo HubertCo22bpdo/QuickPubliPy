@@ -38,19 +38,9 @@ class Launcher(QApplication):
 
 response = requests.get("https://api.github.com/repos/HubertCo22bpdo/QuickPubliPy/releases")
 if response.ok:
-    release = "1.0" #VERSION
+    release = "1.1" #VERSION
     latest_relase = response.json()[0]["tag_name"]
-    release_int = [int(id) for id in release.split('.')]
-    latest_relase_int = [int(id) for id in release.split('.')]
-    if latest_relase_int[0] > release_int[0]:
+    if latest_relase != release:
         launcher = Launcher(sys.argv)
         launcher.exec()
-    elif latest_relase_int[0] == release_int[0]:
-        if latest_relase_int[1] > release_int[1]:
-            launcher = Launcher(sys.argv)
-            launcher.exec()
-        elif latest_relase_int[0] == release_int[0]:
-            if latest_relase_int[2] > release_int[2]:
-                launcher = Launcher(sys.argv)
-                launcher.exec()
 run_gui()

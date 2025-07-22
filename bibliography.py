@@ -1,5 +1,4 @@
 from docx import Document
-from publications_cited import publications_cited
 import json
 from fetchmeta import fetchmeta
 import bib2json
@@ -34,6 +33,7 @@ class Bibliography:
                             print(e, '\nActual indexing error')
 
             self.bib[index] = data
+        self.bib = dict(sorted(self.bib.items(), key=lambda dictbib: int(dictbib[0])))
 
     def insert_from_doi(self, doi, index=999999):
         data = fetchmeta(f'{doi}')
@@ -69,6 +69,7 @@ class Bibliography:
             'Issue': data['issue'] if 'issue'in data.keys() else None
         }
         self.insert(formated_data, index=index)
+        
     def remove(self, index):
         try:
             del self.bib[str(index)]
@@ -84,6 +85,8 @@ class Bibliography:
                         self.bib[key - 1] = self.bib.pop(key)
                     except e as e:
                         print(e, '\nActual indexing error')
+
+        self.bib = dict(sorted(self.bib.items(), key=lambda dictbib: int(dictbib[0])))
 
     def export_bibliography(self, style, filename='defult_bib.docx'):
         for nr, info_dict in self.bib.items():
@@ -196,26 +199,3 @@ class Bibliography:
     def save_json(self, filename):
         with open(f'{filename}.json', 'w') as f:
             json.dump(self.bib, f, indent=2)
-
-
-if __name__ == '__main__':
-    bib = Bibliography(publications_cited)
-    bib.save_json('publications_cited')
-    bib = Bibliography('C:\\Users\\hu3rt\\Desktop\\Ln(HdiPHPO)6CoCN5N3\\QuickPubliPy\\publications_cited.json')
-    # bib.insert_from_doi('https://doi.org/10.1021/acs.accounts.4c00342', 3)
-    bib.remove(3)
-    bib.export_bibliography(style='Chicago')
-    bib.save_json(filename='publications_cited')
-    # print(fetchmeta('https://doi.org/10.1021/acscentsci.9b00288', 'bibtex'))
-    # print(fetchmeta('10.1039/D4QI02373K', 'bibtex'))
-    # with open(f'citation.bib', 'w') as f:
-    #     print(json.dump(fetchmeta('https://doi.org/10.1002/chem.201301131'), f, indent=4))
-    # with open(f'citation2.bib', 'w') as f:
-    #     print(json.dump(fetchmeta('https://doi.org/10.1002/adom.202101721'), f, indent=4))
-    # print(fetchmeta('https://doi.org/10.1002/adom.202101721', 'bibtex'))
-    # # print(fetchmeta('https://doi.org/10.1002/chem.201301131', 'bibtex'))
-    # with open(f'citation4.json', 'w') as f:
-    #     print(json.dump(fetchmeta('https://doi.org/10.1039/B905604C'), f, indent=4))
-    # print(fetchmeta('https://doi.org/10.1039/B905604C', 'bibtex'))
-    
-    
