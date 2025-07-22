@@ -5,7 +5,7 @@
 #define MyAppVersion "1.1"
 #define MyAppPublisher "Multifunctional Luminescent Materials Group"
 #define MyAppURL "https://multilumimater.pl/"
-#define MyAppExeName "MyProg-x64.exe"
+#define MyAppExeName "QuickPubliPy.exe"
 #define MyAppAssocName MyAppName + " File"
 #define MyAppAssocExt ".myp"
 #define MyAppAssocKey StringChange(MyAppAssocName, " ", "") + MyAppAssocExt
