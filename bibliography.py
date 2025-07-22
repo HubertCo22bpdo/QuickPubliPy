@@ -1,7 +1,7 @@
 from docx import Document
 import json
 from fetchmeta import fetchmeta
-import bib2json
+# import bib2json
 
 
 
