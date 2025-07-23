@@ -253,8 +253,13 @@ class BibliographyApp(QWidget):
         self.refresh_list()
 
     def save_json(self):
-        self.bib.save_json("bibliography_updated")
-        QMessageBox.information(self, "Saved", "Saved to bibliography_updated.json")
+        path, _ = QFileDialog.getSaveFileName(self, "Export to json", "bibliography.json", "JSON Files (*.json)")
+        if path:
+            try:
+                self.bib.save_json(filename=path)
+                QMessageBox.information(self, "Exported", f"Exported to {path}")
+            except Exception as e:
+                QMessageBox.critical(self, "Export Error", str(e))
 
     def export_docx(self):
         style = self.style_combo.currentText()
