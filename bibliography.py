@@ -308,7 +308,7 @@ class Bibliography:
                 citation.add_run(f'{info_dict["Journal"]}, ').italic = True
 
                 #Year
-                citation.add_run(f'{info_dict["Year"]}') = True
+                citation.add_run(f'{info_dict["Year"]}')
                 citation.add_run(f', ')
 
                 #Volume
