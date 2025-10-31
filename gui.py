@@ -150,7 +150,7 @@ class BibliographyApp(QWidget):
 
         export_row = QHBoxLayout()
         self.style_combo = QComboBox()
-        self.style_combo.addItems(["Chicago"])
+        self.style_combo.addItems(["Chicago", "RSC"])
         self.btn_export = QPushButton("Export to DOCX")
         export_row.addWidget(QLabel("Style:"))
         export_row.addWidget(self.style_combo)
