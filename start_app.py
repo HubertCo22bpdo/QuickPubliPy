@@ -28,7 +28,7 @@ class Launcher(QApplication):
         launcher_layout = QVBoxLayout()
         launcher_layout.addWidget(QLabel(f"New QuickPubliPy version {latest_relase} is available."))
         install_button = QPushButton("Install new version")
-        install_button.clicked.connect(lambda: open(f"https://github.com/HubertCo22bpdo/QuickPubliPy/tag/{latest_relase}")) #type: ignore
+        install_button.clicked.connect(lambda: open(f"https://github.com/HubertCo22bpdo/QuickPubliPy/releases/tag/{latest_relase}")) #type: ignore
         skip_button: QPushButton = QPushButton("Continue using old version")
         skip_button.clicked.connect(Launcher.closeAllWindows) #type: ignore
         launcher_layout.addWidget(install_button)

@@ -23,6 +23,7 @@ pip-delete-this-directory.txt
 # Distribution / packaging
 .Python
 /build/
+/Personal
 develop-eggs/
 dist/
 downloads/
